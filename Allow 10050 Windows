@@ -14,3 +14,18 @@
         direction: in
         action: allow
         state: enabled
+        
+   # - name: Display Zabbix port status
+   #    debug:
+   #    msg: "Zabbix port is {{ allow }}."
+   
+    - name: Save results to CSV file
+      csv_file:
+        path: "C:/path/to/file.csv"
+        headers:
+          - Hostname
+          - Firewall rule status
+        delimiter: ','
+        write_mode: 'append'
+        rows:
+          - [ "{{ inventory_hostname }}", "{{ 'OK' if firewall_rule.changed else 'NOK' }}" ]
