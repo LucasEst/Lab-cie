@@ -12,7 +12,7 @@
 
     - name: Save results to CSV file
       csv_file:
-        path: "C:/path/to/file.csv"
+        path: "Path/.csv"
         headers:
           - Hostname
           - Server configuration found
