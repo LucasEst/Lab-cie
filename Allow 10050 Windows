@@ -1,0 +1,16 @@
+# need module WinFirewall >  ansible-galaxy collection install community.windows
+- name: Autoriser le port 10050 sur Windows
+  hosts: windows
+  gather_facts: no
+  collections:
+    - community.windows
+
+  tasks:
+    - name: Autoriser le port 10050 dans le pare-feu Windows
+      win_firewall_rule:
+        name: Allow Zabbix agent
+        localport: 10050
+        protocol: tcp
+        direction: in
+        action: allow
+        state: enabled
