@@ -21,10 +21,11 @@
    
     - name: Save results to CSV file
       csv_file:
-        path: "C:/path/to/file.csv"
+        path: "Path/.csv"
         headers:
           - Hostname
           - Firewall rule status
+          - =IF(B2="Yes","OK","NOK")
         delimiter: ','
         write_mode: 'append'
         rows:
