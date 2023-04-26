@@ -1,0 +1,21 @@
+---
+- name: Allow pasiive agent 10050 RHE7
+  hosts: my_redhat_host
+  become: yes
+
+  tasks:
+    - name: Add Zabbix firewall rule 10050
+      firewalld:
+        port: 10050/tcp
+        permanent: yes
+        state: enabled
+        immediate: yes
+        zone: public
+      notify:
+        - Reload firewalld
+
+  handlers:
+    - name: Reload firewalld
+      systemd:
+        name: firewalld
+        state: restarted
