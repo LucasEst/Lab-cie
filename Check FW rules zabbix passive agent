@@ -1,0 +1,24 @@
+---
+- name: Check Zabbix port passive agent
+  hosts: my_firewall_host
+  gather_facts: no
+  
+  tasks:
+    - name: Test Zabbix port
+      wait_for:
+        host: "{{ inventory_hostname }}"
+        port: 10050
+        state: started
+        delay: 5
+        timeout: 10
+      register: zabbix_port
+
+    - name: Display Zabbix port status
+      debug:
+        msg: "Zabbix port is {{ 'open' if zabbix_port is succeeded else 'closed' }}."
+
+    - name: Add Zabbix passive agent port status to CSV file
+      lineinfile:
+        path: "path/.csv"
+        line: "{{ inventory_hostname }},10050,{{ 'open' if zabbix_port is succeeded else 'closed' }}"
+        create: yes
