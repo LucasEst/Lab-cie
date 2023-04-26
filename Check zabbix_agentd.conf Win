@@ -1,0 +1,22 @@
+- name: Check Zabbix Agent configuration file win
+  hosts: inventory_hostname
+  become: yes
+
+  tasks:
+    - name: Check for server configuration
+      win_lineinfile:
+        path: "C:/Program Files/Zabbix Agent/zabbix_agentd.conf"
+        regexp: "lélélé"
+        line: "hostname/"
+      register: server_check
+
+    - name: Save results to CSV file
+      csv_file:
+        path: "C:/path/to/file.csv"
+        headers:
+          - Hostname
+          - Server configuration found
+        delimiter: ','
+        write_mode: 'append'
+        rows:
+          - [ "{{ inventory_hostname }}", "{{ 'Yes' if server_check.changed else 'No' }}" ]
