@@ -25,7 +25,6 @@
         headers:
           - Hostname
           - Firewall rule status
-          - =IF(B2="Yes","OK","NOK")
         delimiter: ','
         write_mode: 'append'
         rows:
