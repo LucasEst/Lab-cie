@@ -1,0 +1,19 @@
+---
+- name: Allow passive agent Zabbix port 10050 RHE6
+  hosts: my_redhat6_host
+  become: yes
+
+  tasks:
+    - name: Add Zabbix firewall rule 10050
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: 10050
+        jump: ACCEPT
+        permanent: yes
+      notify:
+        - Save iptables
+
+  handlers:
+    - name: Save iptables
+      command: /sbin/service iptables save
