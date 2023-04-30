@@ -1,11 +1,12 @@
 ---
 - name: Allow passive agent Zabbix port 10050 RHE6
   hosts: my_redhat6_host
-  become: yes
+  become_method: sudo
+  become: true
 
   tasks:
     - name: Add Zabbix firewall rule 10050
-      iptables:
+      ansible.module_utils.basic.iptables:
         chain: INPUT
         protocol: tcp
         destination_port: 10050
