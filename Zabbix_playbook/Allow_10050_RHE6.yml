@@ -17,4 +17,7 @@
 
   handlers:
     - name: Save iptables
-      command: /sbin/service iptables save
+      service:
+        name: iptables
+        state: saved 
+      #command: /sbin/service iptables save
