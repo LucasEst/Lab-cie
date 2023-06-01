@@ -1,0 +1,99 @@
+services:
+  nginx_reverse:
+    container_name: nginx_reverse
+    hostname: nginx_reverse
+    image: nginx:latest
+    networks:
+      - frontend
+      - backend
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - type: bind
+        source: /etc/nginx
+        target: /etc/nginx
+      - type: bind
+        source: /etc/ssl/private
+        target: /etc/ssl/private
+
+  httpd: 
+    container_name: httpd
+    hostname: httpd
+    image: httpd:latest
+    networks:
+      - backend
+    volumes:
+      - type: bind
+        source: /srv/nextcloud
+        target: /usr/local/apache2/htdocs 
+      - type: bind
+        source: /etc/httpd
+        target: /usr/local/apache2/conf
+    depends_on:
+      php-fpm:
+        condition: service_started
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  mariadb:
+    container_name: mariadb
+    hostname: mariadb
+    image: mariadb:10.6
+    networks:
+      - backend
+    volumes:
+      - type: bind
+        source: /srv/mariadb
+        target: /var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=yourpassword 
+      - MYSQL_DATABASE=yourdatabase
+      - MYSQL_USER=yourusername
+      - MYSQL_PASSWORD=yourpassword
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:latest
+    networks:
+      - backend
+    volumes:
+      - type: bind
+        source: /etc/redis
+        target: /usr/local/etc/redis
+
+  php-fpm:
+    container_name: php-fpm
+    hostname: php-fpm
+    image: bitnami/php-fpm:8.2
+    networks:
+      - backend
+    volumes:
+      - type: bind
+        source: /srv/nextcloud
+        target: /app
+
+  gitlab:
+    container_name: gitlab
+    hostname: gitlab
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    volumes:
+      - type: bind
+        source: /srv/gitlab/data
+        target: /var/opt/gitlab
+      - type: bind
+        source: /srv/gitlab/logs
+        target: /var/log/gitlab
+      - type: bind
+        source: /srv/gitlab/config
+        target: /etc/gitlab
+
+networks: 
+  frontend:
+    name: frontend
+  backend:
+    name: backend
